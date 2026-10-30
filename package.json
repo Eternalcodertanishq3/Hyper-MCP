@@ -1,0 +1,38 @@
+{
+  "name": "hypermcp",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A local MCP runtime with tool discovery, reference data, schema locks, secret scrubbing, and staged writes.",
+  "bin": {
+    "hypermcp": "bin/hypermcp.js"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "build": "node scripts/clean-dist.js && tsc -p tsconfig.build.json && node scripts/copy-dashboard.js",
+    "start": "node --experimental-sqlite dist/index.js start",
+    "dev": "node --experimental-sqlite --import tsx src/index.ts start",
+    "demo": "node --experimental-sqlite dist/demo.js",
+    "test": "node --experimental-sqlite --import tsx --test tests/e2e.test.ts tests/dashboard.test.ts tests/security.test.ts tests/cli.test.ts tests/stagingJournal.test.ts tests/sqliteOcc.test.ts",
+    "pretest": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "prepack": "npm run build"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "README.md",
+    "hypermcp.config.example.json"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/client": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

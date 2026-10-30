@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.hypermcp-*
+.hypermcp-mock-pg.json
+.hypermcp-mock-pg.json.tmp
+.hypermcp-demo-*
+.hypermcp-cli-*
+.hypermcp-e2e-*
+.hypermcp-journal-*
+.hypermcp-security-*
+.hypermcp-transactions.json
+.hypermcp-transactions.json.*.tmp
+.tmp-lock.json
+.env
+.env.local
+.DS_Store
+*.log

@@ -1,0 +1,23 @@
+{
+  "dashboardPort": 4317,
+  "lockFile": "./mcp-lock.json",
+  "policies": {
+    "virtualizeThresholdTokens": 500,
+    "searchLimit": 5,
+    "maskEmails": true,
+    "snapshotRetentionHours": 0,
+    "maxSnapshotStorageMb": 50
+  },
+  "servers": [
+    {
+      "name": "replace-with-your-server",
+      "command": "node",
+      "args": ["./path/to/your-mcp-server.js"],
+      "cwd": ".",
+      "readOnlyTools": ["replace-with-a-read-only-tool"],
+      "internalTools": [],
+      "secretHydrationTools": [],
+      "stagedTools": {}
+    }
+  ]
+}

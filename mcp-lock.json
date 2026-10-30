@@ -1,0 +1,82 @@
+{
+  "stripe": {
+    "stripe_list_transactions": {
+      "hash": "cc2187000f375a142076760065c5a2d5849e31d70235acba96fa45b7cc7176f0",
+      "blocked": false
+    },
+    "stripe_get_transaction": {
+      "hash": "99f8f706069519c79bf9672a5f4405889da453be63436ed01ab7208328850880",
+      "blocked": false
+    },
+    "stripe_create_refund": {
+      "hash": "515336e6ed0801be47f13bab837f915a228de31f618a28c72097bbee19280de1",
+      "blocked": false
+    },
+    "stripe_list_customers": {
+      "hash": "763c8af3a96b256796cfb5122809954a547233ddbf803af5c9e759b80b81872c",
+      "blocked": false
+    },
+    "stripe_get_customer": {
+      "hash": "f4c2608f2ffde53a387305898827c698773b1565ad55e6bf1077ce217b02d047",
+      "blocked": false
+    },
+    "stripe_list_products": {
+      "hash": "c72fd5313b9faf87a8e24b7d175222ab7fd5f8c14d474b7d6b66079dfd9612e8",
+      "blocked": false
+    },
+    "stripe_get_product": {
+      "hash": "dbda7d849d69603780ade500e5f7981fcb8e39109ae5da47c8fc56f06ea2118f",
+      "blocked": false
+    },
+    "stripe_search_disputes": {
+      "hash": "7c5f9011953522caa76b4a5c64b21e808d49d31e620f74fb171d4a8528f2a114",
+      "blocked": false
+    },
+    "stripe_list_payouts": {
+      "hash": "a5b985b3795e0a7779df1142414054d4af93688ce0d6006f96df7257200fa639",
+      "blocked": false
+    },
+    "stripe_create_customer": {
+      "hash": "12d04b3b0c55149f596df85b7ca88818df5fd3dc5ddedb6826e52c874a9b7333",
+      "blocked": false
+    },
+    "stripe_update_customer": {
+      "hash": "d5cdba041bcfd7970d9f537ad1b8e508f173ac1f34f7a086fee0dcb3d71ce878",
+      "blocked": false
+    },
+    "stripe_delete_customer": {
+      "hash": "ed86ebbb95db11aa5b8c6ccaa6ba622584b40e353463f1d509af5d7bccc25117",
+      "blocked": false
+    },
+    "stripe_export_logs": {
+      "hash": "93c4c5851d140d677345799c7cc905dc11ba834d629f9587625508f6bb151bbd",
+      "blocked": false
+    },
+    "stripe_list_balance": {
+      "hash": "4b070aa8c810172caa74cc8b15e62ac5f51de73511e257b96e95b2a33af3a5bf",
+      "blocked": false
+    },
+    "stripe_send_invoice": {
+      "hash": "7242b3da35ff75b9c21c11aac8676e55d811c5ac34e23ada80b49bd709f8a03a",
+      "blocked": false
+    }
+  },
+  "postgres": {
+    "pg_query": {
+      "hash": "81406726554081127be48380d7e46f1dfb034f212165a7ef3b9b9169716aaf9e",
+      "blocked": false
+    },
+    "pg_insert_audit_logs": {
+      "hash": "6ea930da9e879523c0a170150614fc2224c9894e747f6f4eaa755f2d05ab49a5",
+      "blocked": false
+    },
+    "pg_delete_inactive_users": {
+      "hash": "72b225e1382b9ff83757821966714321792ddc8a317e819fae7541d1d1627511",
+      "blocked": false
+    },
+    "pg_restore_users_snapshot": {
+      "hash": "a0399533147cfcc11e2ae5749292db05219535387d8bb3b590ab64271c3472ac",
+      "blocked": false
+    }
+  }
+}

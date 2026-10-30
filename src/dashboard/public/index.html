@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HyperMCP Control Plane</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080b11;--panel:#111722;--panel2:#151e2b;--line:#273345;--text:#e9eef7;--muted:#8b98aa;--cyan:#55d6d0;--violet:#9f8bff;--red:#ff6d79;--green:#5ee0a0;--amber:#ffc56d}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 12% -12%,#1b3140 0,transparent 40%),var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    .shell{max-width:1440px;margin:auto;padding:30px 34px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:28px}.brand{display:flex;align-items:center;gap:14px}.logo{height:42px;width:42px;border-radius:14px;background:linear-gradient(135deg,#62e3d7,#7386ff);display:grid;place-items:center;color:#071118;font-weight:900;font-size:19px;box-shadow:0 8px 28px #58d6d044}.eyebrow{color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.title{font-size:21px;font-weight:750;letter-spacing:-.03em}.subtitle{color:var(--muted);font-size:12px}.status{border:1px solid #295c50;background:#11251f;color:var(--green);padding:8px 12px;border-radius:30px;font-size:11px;font-weight:750;letter-spacing:.08em}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px;box-shadow:0 0 10px var(--green)}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 19px}.card,.panel{background:linear-gradient(145deg,#141d29,#0e141d);border:1px solid var(--line);border-radius:15px;box-shadow:0 10px 36px #0003}.kpi{padding:17px 19px;min-height:113px}.klabel{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}.kvalue{font-size:27px;font-weight:760;letter-spacing:-.04em;margin-top:7px}.kfoot{font-size:11px;color:var(--muted);margin-top:2px}.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border-radius:20px;background:#16362f;color:var(--green);font-size:10px;font-weight:800;margin-left:6px}
+    .grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(340px,.85fr);gap:16px}.panel{padding:19px;margin-bottom:16px}.panelhead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}.hgroup h2{margin:0;font-size:14px;letter-spacing:-.01em}.hgroup p{margin:3px 0 0;color:var(--muted);font-size:11px}.tag{font-size:10px;font-weight:750;letter-spacing:.06em;color:var(--cyan);background:#123036;border:1px solid #24565d;border-radius:6px;padding:4px 7px;white-space:nowrap}
+    .tx{border:1px solid #433746;border-radius:12px;background:linear-gradient(135deg,#1b1822,#141822);padding:15px;margin-top:11px}.txhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.txname{font-weight:750}.txmeta{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);margin-top:3px}.state{font-size:10px;font-weight:850;letter-spacing:.07em;border-radius:20px;padding:4px 8px}.pending{background:#40301b;color:var(--amber)}.in_flight,.outcome_unknown{background:#49351b;color:#ffd28c}.committed{background:#16362f;color:var(--green)}.rolled_back{background:#202b3c;color:#a8c5ff}.rejected,.expired_unapproved{background:#35212a;color:#ff9eac}.diffline{color:var(--amber);font-size:11px;margin:12px 0}.diffgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.diffside{border:1px solid var(--line);background:#0b1017;border-radius:9px;padding:10px;min-width:0}.diffside h3{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}.count{font-size:12px;font-weight:720}.changed{color:var(--red);font-size:10px}.diffside pre{max-height:115px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#aab8ca;margin:7px 0 0}.full-snapshot{max-height:480px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--line);background:#0b1017;border-radius:9px;padding:12px;font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#c3d0e2}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:13px}.btn{border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--text);background:#192231;font-size:11px;font-weight:750;cursor:pointer}.btn:hover{filter:brightness(1.22)}.btn.primary{border-color:#38a597;background:#14554e;color:#d6fffa}.btn.danger{border-color:#76444b;background:#3b2028;color:#ffc5cc}.btn:disabled{opacity:.5;cursor:wait}.audit-label{display:inline-block;color:var(--amber);background:#332919;border:1px solid #66502b;border-radius:5px;padding:4px 7px;font-size:9px;font-weight:800;letter-spacing:.06em}.empty{padding:25px 10px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:10px;font-size:12px}.refs{display:grid;gap:9px}.ref{background:#0b1119;border:1px solid var(--line);border-radius:10px;padding:12px}.refhead{display:flex;justify-content:space-between;gap:10px}.pointer{color:var(--violet);font:12px ui-monospace,SFMono-Regular,Consolas,monospace}.small{color:var(--muted);font-size:10px}.schema{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.field{font:10px ui-monospace,SFMono-Regular,Consolas,monospace;background:#192230;border-radius:5px;padding:3px 6px;color:#bdc8d8}.security{display:grid;gap:8px}.event,.toolrow{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #202a38;padding:8px 0;font-size:11px}.event:last-child,.toolrow:last-child{border:0}.alert{color:var(--red);font-weight:750}.ok{color:var(--green);font-weight:750}.muted{color:var(--muted)}.separator{height:1px;background:var(--line);margin:13px 0}.footer{color:#637083;text-align:center;font-size:10px;margin-top:4px}
+    @media(max-width:900px){.shell{padding:22px 17px}.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.top{align-items:flex-start}.subtitle{max-width:230px}.kpis{gap:8px}.kpi{padding:13px;min-height:100px}.kvalue{font-size:23px}.panel{padding:14px}.diffgrid{grid-template-columns:1fr}.actions{justify-content:stretch}.actions .btn{flex:1}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="brand"><div class="logo">H</div><div><div class="eyebrow">Local MCP Runtime</div><div class="title">HyperMCP Control Plane</div><div class="subtitle">Context bus · schema firewall · transaction staging</div></div></div>
+      <div class="status"><span class="dot"></span><span id="runtime-status">CONNECTING</span></div>
+    </header>
+    <section class="kpis">
+      <article class="card kpi"><div class="klabel">Context tokens saved</div><div class="kvalue" id="tokens-saved">0</div><div class="kfoot"><span class="badge" id="reduction">0% reduction</span></div></article>
+      <article class="card kpi"><div class="klabel">Active $ref tables</div><div class="kvalue" id="ref-count">0</div><div class="kfoot">Local SQL tables available</div></article>
+      <article class="card kpi"><div class="klabel">Secrets vaulted</div><div class="kvalue" id="secret-count">0</div><div class="kfoot">Credentials and PII masked</div></article>
+      <article class="card kpi"><div class="klabel">Rug-pulls blocked</div><div class="kvalue" id="blocked-count">0</div><div class="kfoot">Schema lock enforcement</div></article>
+    </section>
+    <div class="grid">
+      <section class="panel">
+        <div class="panelhead"><div class="hgroup"><h2>MCP-Stage · Transaction review</h2><p>Review the state diff before a write reaches an upstream server.</p></div><span class="tag" id="pending-count">0 PENDING</span></div>
+        <div id="pending-list"><div class="empty">Waiting for staged writes</div></div>
+        <div class="separator"></div>
+        <div class="panelhead"><div class="hgroup"><h2>Commit history</h2><p>Restore uses a saved post-write snapshot and refuses to overwrite newer upstream state.</p></div></div>
+        <div id="history-list"><div class="empty">No committed writes yet</div></div>
+        <div class="separator"></div>
+        <div class="panelhead"><div class="hgroup"><h2>Prior-session audit</h2><p id="audit-history-note">Metadata only · cross-restart snapshot retention is disabled</p></div></div>
+        <div id="audit-history-list"><div class="empty">No prior-session records</div></div>
+      </section>
+      <div>
+        <section class="panel">
+          <div class="panelhead"><div class="hgroup"><h2>MCP-Pipe · Virtual data bus</h2><p>Large outputs stay local and are queried through SQLite.</p></div><span class="tag">SQLITE</span></div>
+          <div id="ref-list" class="refs"><div class="empty">No virtualized data yet</div></div>
+        </section>
+        <section class="panel">
+          <div class="panelhead"><div class="hgroup"><h2>MCP-Lock · Security firewall</h2><p>Tool schemas are pinned and checked at startup.</p></div><span class="tag" id="lock-status">LOCKING</span></div>
+          <div id="security-list" class="security"></div>
+          <div class="separator"></div>
+          <div class="hgroup"><h2 style="font-size:12px">Upstream tool integrity</h2></div>
+          <div id="tool-list"></div>
+        </section>
+      </div>
+    </div>
+    <div class="footer">Bound to loopback · state remains in this local runtime</div>
+  </main>
+  <script>
+    const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+    const fmt = (n) => Number(n || 0).toLocaleString();
+    function findRows(value) {
+      if (Array.isArray(value) && value.every((x) => x && typeof x === "object" && !Array.isArray(x))) return value;
+      if (!value || typeof value !== "object") return [];
+      return Object.values(value).map(findRows).sort((a,b) => b.length-a.length)[0] || [];
+    }
+    function preview(value) {
+      const rows = findRows(value);
+      if (rows.length) return rows.slice(0,4).map((row) => {
+        const keys = Object.keys(row).slice(0,4);
+        return keys.map((key) => key + ": " + String(row[key]).slice(0,38)).join(" · ");
+      }).join("\n") + ((value?.truncated || rows.length > 4) ? "\n… " + Math.max(0, (value?.total_rows ?? rows.length)-Math.min(rows.length,4)) + " more rows" : "");
+      return JSON.stringify(value, null, 2).slice(0,420);
+    }
+    function tableDiff(before, after) {
+      const beforeRows = findRows(before), afterRows = findRows(after);
+      const keyOf = (row) => String(row.id ?? row.email ?? JSON.stringify(row));
+      const afterKeys = new Set(afterRows.map(keyOf)), beforeKeys = new Set(beforeRows.map(keyOf));
+      const removed = beforeRows.filter((row) => !afterKeys.has(keyOf(row))).length;
+      const added = afterRows.filter((row) => !beforeKeys.has(keyOf(row))).length;
+      return {
+        before:before?.total_rows ?? beforeRows.length,
+        after:after?.total_rows ?? afterRows.length,
+        removed:Math.max(removed, (before?.total_rows ?? beforeRows.length) - (after?.total_rows ?? afterRows.length), 0),
+        added:Math.max(added, (after?.total_rows ?? afterRows.length) - (before?.total_rows ?? beforeRows.length), 0),
+      };
+    }
+    function txCard(tx, pending) {
+      const executing = tx.status === "IN_FLIGHT";
+      const after = pending || executing ? tx.previewAfter : tx.after;
+      const diff = tableDiff(tx.before, after);
+      const stateClass = String(tx.status).toLowerCase();
+      let action = "";
+      if (pending) action = '<div class="actions"><button class="btn danger" id="btn-reject-' + esc(tx.id) + '" data-action="reject" data-id="' + esc(tx.id) + '">Reject</button><button class="btn primary" id="btn-approve-' + esc(tx.id) + '" data-action="approve" data-id="' + esc(tx.id) + '">Approve &amp; Commit</button></div>';
+      else if ((tx.status === "COMMITTED" || tx.status === "OUTCOME_UNKNOWN") && tx.after !== undefined && tx.restoreAvailable !== false) action = '<div class="actions"><button class="btn danger" id="btn-undo-' + esc(tx.id) + '" data-action="undo" data-id="' + esc(tx.id) + '">Restore Snapshot</button></div>';
+      const snapshotBadge = tx.snapshotAvailable
+        ? '<div style="margin-top:10px"><span class="audit-label">' + esc(tx.snapshotLabel || (tx.restoreAvailable ? 'PAST SESSION · SNAPSHOT RETAINED · RESTORE AVAILABLE' : 'PAST SESSION · DIFF RETAINED · RESTORE UNAVAILABLE')) + '</span></div>'
+        : '';
+      const fullSnapshot = !pending && tx.after !== undefined
+        ? '<div class="actions"><button class="btn" data-snapshot-id="' + esc(tx.id) + '">View full before/after snapshot</button></div><pre class="full-snapshot" id="full-snapshot-' + esc(tx.id) + '" hidden></pre>'
+        : '';
+      return '<article class="tx"><div class="txhead"><div><div class="txname">' + esc(tx.server) + '.' + esc(tx.tool) + '</div><div class="txmeta">' + esc(tx.id) + ' · ' + new Date(tx.createdAt).toLocaleString() + '</div></div><span class="state ' + esc(stateClass) + '">' + esc(tx.status) + '</span></div>' + snapshotBadge +
+        '<div class="diffline">' + esc(tx.diffSummary) + (diff.removed ? ' · <b>' + diff.removed + ' rows to be deleted</b>' : '') + (diff.added ? ' · ' + diff.added + ' rows to be added' : '') + '</div>' +
+        '<div class="diffgrid"><div class="diffside"><h3>Before</h3><div class="count">' + fmt(diff.before) + ' rows</div><pre>' + esc(preview(tx.before)) + '</pre></div><div class="diffside"><h3>' + (pending || executing ? 'Proposed after' : tx.status === 'ROLLED_BACK' ? 'After rollback' : 'After commit') + '</h3><div class="count">' + fmt(diff.after) + ' rows</div><div class="changed">' + (diff.removed ? '− ' + diff.removed + ' rows' : '') + (diff.added ? '  + ' + diff.added + ' rows' : tx.status === 'ROLLED_BACK' ? 'Snapshot restored' : '') + '</div><pre>' + esc(preview(after)) + '</pre></div></div>' +
+        (tx.error ? '<div class="diffline alert">' + esc(tx.error) + '</div>' : '') + (tx.snapshotNotice ? '<div class="small">' + esc(tx.snapshotNotice) + '</div>' : '') + fullSnapshot + action + '</article>';
+    }
+    function auditCard(entry) {
+      if (entry.snapshotAvailable) return txCard(entry, false);
+      const sessionLabel = entry.sessionState === "ACTIVE" ? "OTHER SESSION · AUDIT ONLY" : entry.snapshotState === "EXPIRED" ? "PAST SESSION · SNAPSHOT EXPIRED" : entry.snapshotState === "RESTORED" ? "PAST SESSION · SNAPSHOT RESTORED" : "PAST SESSION · AUDIT ONLY · SNAPSHOT UNAVAILABLE";
+      const notice = entry.status === "EXPIRED_UNAPPROVED"
+        ? "Process exited before approval. Restage the tool call to review and approve it."
+        : entry.status === "OUTCOME_UNKNOWN"
+          ? entry.errorCategory === "DISPATCH_INTERRUPTED"
+            ? "HyperMCP stopped during execution. Upstream state may have changed; inspect it manually before taking action."
+            : "The upstream call outcome was not confirmed. Inspect upstream state manually before taking action."
+          : entry.snapshotState === "EXPIRED"
+            ? "Snapshot expired. Diff preview and restore are unavailable for this record."
+            : entry.snapshotState === "RESTORED"
+              ? "The retained snapshot was already restored. No further restore action is available."
+              : "Snapshot was not retained or is unavailable. Diff preview and restore are unavailable for this record.";
+      return '<article class="tx"><div class="txhead"><div><div class="txname">' + esc(entry.server) + '.' + esc(entry.tool) + '</div><div class="txmeta">' + esc(entry.id) + ' · ' + new Date(entry.createdAt).toLocaleString() + '</div></div><span class="state ' + esc(String(entry.status).toLowerCase()) + '">' + esc(entry.status) + '</span></div>' +
+        '<div style="margin-top:10px"><span class="audit-label">' + sessionLabel + '</span></div>' +
+        '<div class="diffline">' + esc(entry.diffSummary) + ' · ' + fmt(entry.affectedRows) + ' affected rows</div>' +
+        '<div class="small">' + esc(notice) + (entry.errorCategory ? ' · Error category: ' + esc(entry.errorCategory) : '') + '</div></article>';
+    }
+    function render(state) {
+      const m = state.metrics || {};
+      document.getElementById("runtime-status").textContent = state.runtime?.status || "RUNNING";
+      document.getElementById("tokens-saved").textContent = fmt(m.tokens_saved);
+      document.getElementById("reduction").textContent = (m.token_reduction_pct || 0) + "% reduction";
+      document.getElementById("ref-count").textContent = fmt(m.active_reference_tables);
+      document.getElementById("secret-count").textContent = fmt(m.secrets_vaulted);
+      document.getElementById("blocked-count").textContent = fmt(m.blocked_rug_pulls);
+      const txs = state.transactions || [], pending = txs.filter((tx) => tx.status === "PENDING"), history = txs.filter((tx) => tx.status !== "PENDING");
+      document.getElementById("pending-count").textContent = pending.length + " PENDING";
+      document.getElementById("pending-list").innerHTML = pending.length ? pending.map((tx) => txCard(tx, true)).join("") : '<div class="empty">No writes are waiting for approval</div>';
+      document.getElementById("history-list").innerHTML = history.length ? history.map((tx) => txCard(tx, false)).join("") : '<div class="empty">No transaction history yet</div>';
+      const audit = state.auditHistory || {entries:[], total:0, truncated:false}, auditEntries = audit.entries || [];
+      const retention = state.snapshotRetention || {enabled:false};
+      document.getElementById("audit-history-note").textContent = (audit.truncated ? 'Showing latest ' + auditEntries.length + ' of ' + fmt(audit.total) + ' records · ' : '') + (retention.enabled ? 'Opt-in snapshot retention · expires after ' + retention.retentionHours + ' hours · payload quota ' + retention.maxStorageMb + ' MiB' : 'Metadata only · cross-restart snapshot retention is disabled');
+      document.getElementById("audit-history-list").innerHTML = auditEntries.length ? auditEntries.map(auditCard).join("") : '<div class="empty">No prior-session records</div>';
+      const refs = state.references || [];
+      document.getElementById("ref-list").innerHTML = refs.length ? refs.map((ref) => '<article class="ref"><div class="refhead"><span class="pointer">' + esc(ref.pointer) + '</span><span class="small">' + fmt(ref.rowCount) + ' rows · ' + fmt(ref.originalTokens) + ' tokens</span></div><div class="schema">' + Object.entries(ref.schema || {}).map(([name,type]) => '<span class="field">' + esc(name) + ' <i class="muted">' + esc(type) + '</i></span>').join("") + '</div></article>').join("") : '<div class="empty">No virtualized data yet</div>';
+      const security = state.security || {};
+      document.getElementById("lock-status").textContent = fmt(security.pinnedTools) + " TOOLS PINNED";
+      const events = security.events || [];
+      document.getElementById("security-list").innerHTML = events.length ? events.map((event) => '<div class="event"><span><b class="' + (event.type === "RUG_PULL_BLOCKED" ? "alert" : "ok") + '">' + esc(event.type === "RUG_PULL_BLOCKED" ? "BLOCKED" : "PINNED") + '</b> · ' + esc(event.server) + '.' + esc(event.tool) + '</span><span class="small">' + esc(event.message) + '</span></div>').join("") : '<div class="event"><span class="ok">No security alerts</span><span class="small">Schema checks active</span></div>';
+      const tools = state.tools || [];
+      document.getElementById("tool-list").innerHTML = tools.map((tool) => '<div class="toolrow"><span>' + esc(tool.server) + '.' + esc(tool.name) + '</span><span class="' + (tool.lock_status === "VERIFIED" ? "ok" : "alert") + '">' + esc(tool.lock_status) + '</span></div>').join("");
+    }
+    async function refresh() {
+      try { const response = await fetch("/api/state", {cache:"no-store"}); if (response.ok) render(await response.json()); }
+      catch (error) { document.getElementById("runtime-status").textContent = "DISCONNECTED"; }
+    }
+    document.addEventListener("click", async (event) => {
+      const snapshotButton = event.target.closest("button[data-snapshot-id]");
+      if (snapshotButton) {
+        snapshotButton.disabled = true;
+        try {
+          const response = await fetch("/api/tx/" + encodeURIComponent(snapshotButton.dataset.snapshotId) + "/snapshot", {cache:"no-store"});
+          const value = await response.json();
+          if (!response.ok) throw new Error(value.error || "Snapshot is unavailable.");
+          const output = document.getElementById("full-snapshot-" + snapshotButton.dataset.snapshotId);
+          output.hidden = false;
+          output.textContent = "BEFORE\n" + JSON.stringify(value.before, null, 2) + (value.after !== undefined ? "\n\nAFTER\n" + JSON.stringify(value.after, null, 2) : value.previewAfter !== undefined ? "\n\nPROPOSED AFTER\n" + JSON.stringify(value.previewAfter, null, 2) : "");
+          snapshotButton.textContent = "Full snapshot loaded";
+        } catch (error) { window.alert(error.message); snapshotButton.disabled = false; }
+        return;
+      }
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+      button.disabled = true;
+      try {
+        const response = await fetch("/api/tx/" + encodeURIComponent(button.dataset.id) + "/" + button.dataset.action, {method:"POST", headers:{"content-type":"application/json"}});
+        const value = await response.json();
+        if (!response.ok) throw new Error(value.error || "Transaction action failed.");
+        await refresh();
+      } catch (error) { window.alert(error.message); button.disabled = false; }
+    });
+    const events = new EventSource("/api/events");
+    events.addEventListener("state", (event) => { try { render(JSON.parse(event.data)); } catch {} });
+    refresh();
+  </script>
+</body>
+</html>
